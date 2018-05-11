@@ -12,7 +12,6 @@ class colors:
 	CYAN = '\033[36m'
 	BOLD = '\033[1m'
 	ENDBOLD = '\033[22m'
-	UNDERLINE = '\033[4m'
 	ENDC = '\033[0m'
 
 def main():
@@ -41,7 +40,13 @@ class Server:
 
 	def __init__(self, port):
 		self.port = port
-		self.sock.bind(('0.0.0.0', port))
+		try:
+			self.sock.bind(('0.0.0.0', port))
+		except Exception as e:
+			if str(e) == "[Errno 98] Address already in use":
+				print(colors.RED + "Port " + colors.BOLD + str(port) + colors.ENDBOLD + " is already in use" + colors.ENDC)
+			self.sock.close()
+			exit()
 		print (colors.CYAN + "Starting server on port " + colors.BOLD + str(port) + colors.ENDC)
 		self.sock.listen(1)
 
@@ -115,14 +120,18 @@ class Client:
 	running = True
 	
 	def __init__(self, ip, port):
-		self.sock.connect((ip, port))
+		try:
+			self.sock.connect((ip, port))
+		except Exception as e:
+			print(colors.RED + "Couldn't connect to the server at " + colors.BOLD + ip + ":" + str(port) + colors.ENDC)
+			return
 		self.ip = ip
 		self.port = port
 
 		iThread = threading.Thread(target=self.send)
 		iThread.deamon = True
 
-		while True:
+		while self.running:
 			data = self.sock.recv(1024).decode('utf-8')
 			if data == "Please enter a nickname: ":
 				name = input("Please enter a nickname: ")
@@ -141,9 +150,15 @@ class Client:
 	def send(self):
 		while self.running:
 			msg = input("")
-			connection = self.sock.connect_ex((self.ip, self.port))
-			if connection:
-				self.sock.send(bytes(msg, 'utf-8'))
+			if self.running:
+				try:
+					self.sock.send(bytes(msg, 'utf-8'))
+				except Exception as e:
+					if str(e) == "[Errno 32] Broken pipe":
+						print(colors.RED + "Connection failed" + colors.ENDC)
+					break
+			else:
+				break
 			if msg == "/exit":
 				break
 			else:
