@@ -1,1 +1,3 @@
-A simple python based chat server/client
+Usage: 
+  Server: ./chat.py -s -p <PORT>
+  Client: ./chat.py -c <IP> -p <PORT>
