@@ -15,12 +15,12 @@ def main():
 	try:
 		system('mkdir versions')
 	except Exception as e:
-		raise e
+		print()
 	try:
 		system('mkdir versions/'+oldversion)
 	except Exception as e:
-		raise e
-
+		print()
+	
 	system('mv chat.py versions/'+oldversion)
 	system('mv version.txt versions/'+oldversion)
 
