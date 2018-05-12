@@ -197,11 +197,11 @@ class Client:
 				self.sock.send("/exit".encode())
 				break
 			elif data.split("=")[0] == "version":
-				print(colors.ORANGE + "The server is running a diferent version (v" + data.split("=")[1] + ")" + colors.ENDC)
-
-				if float(data.split("=")[1]) > open('version.txt', 'r').read():
+				if float(data.split("=")[1]) > float(open('version.txt', 'r').read()):
+					print(colors.ORANGE + "The server is running a diferent version (v" + data.split("=")[1] + ")" + colors.ENDC)
 					print(colors.BLUE + "Try updating")
-				else:
+				elif float(data.split("=")[1]) < float(open('version.txt', 'r').read()):
+					print(colors.ORANGE + "The server is running a diferent version (v" + data.split("=")[1] + ")" + colors.ENDC)
 					print(colors.BLUE + "Try running versions/" + data.split("=")[1] + "/chat.py")
 
 				self.running = False
