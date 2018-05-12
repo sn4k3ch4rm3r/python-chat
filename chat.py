@@ -160,6 +160,8 @@ class Server:
 			nickname = c.recv(1024).decode('utf-8').split("\n")[0]
 			if nickname == self.termStr:
 				break
+			elif nickname == '/exit':
+				break
 			c.send(str(colors.GREEN + "Welcome " + colors.BOLD + nickname + colors.ENDC + "\n").encode())
 			cThread = threading.Thread(target=self.handler, args=(c, a, nickname))
 			cThread.deamon = True
@@ -199,12 +201,13 @@ class Client:
 			elif data.split("=")[0] == "version":
 				if float(data.split("=")[1]) > float(open('version.txt', 'r').read()):
 					print(colors.ORANGE + "The server is running a diferent version (v" + data.split("=")[1] + ")" + colors.ENDC)
-					print(colors.BLUE + "Try updating")
+					print(colors.BLUE + "Try updating" + colors.ENDC)
 				elif float(data.split("=")[1]) < float(open('version.txt', 'r').read()):
 					print(colors.ORANGE + "The server is running a diferent version (v" + data.split("=")[1] + ")" + colors.ENDC)
-					print(colors.BLUE + "Try running versions/" + data.split("=")[1] + "/chat.py")
+					print(colors.BLUE + "Try running versions/" + data.split("=")[1] + "/chat.py" + colors.ENDC)
 
 				self.running = False
+				self.sock.send("/exit".encode())
 				self.sock.send("/exit".encode())
 				break
 			else:
