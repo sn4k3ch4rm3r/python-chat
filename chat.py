@@ -79,7 +79,7 @@ def checkForUpdates():
 			sleep(0.2)
 
 def Update():
-	subprocess.Popen(["python", "./update.py"])
+	subprocess.Popen(["python3", "./update.py"])
 	sys.exit(0)
 
 class Server:
@@ -155,6 +155,7 @@ class Server:
 	def run(self):
 		while True:
 			c, a = self.sock.accept()
+			c.send(("version=" + str(open('version.txt', 'r').read())).encode())
 			c.send("Please enter a nickname: ".split("\n")[0].encode())
 			nickname = c.recv(1024).decode('utf-8').split("\n")[0]
 			if nickname == self.termStr:
@@ -192,6 +193,17 @@ class Client:
 				iThread.start()
 			elif data == "/exit":
 				print(colors.RED + colors.BOLD + "Server closed" + colors.ENDC)
+				self.running = False
+				self.sock.send("/exit".encode())
+				break
+			elif data.split("=")[0] == "version":
+				print(colors.ORANGE + "The server is running a diferent version (v" + data.split("=")[1] + ")" + colors.ENDC)
+
+				if float(data.split("=")[1]) > open('version.txt', 'r').read():
+					print(colors.BLUE + "Try updating")
+				else:
+					print(colors.BLUE + "Try running versions/" + data.split("=")[1] + "/chat.py")
+
 				self.running = False
 				self.sock.send("/exit".encode())
 				break
