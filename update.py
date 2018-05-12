@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
-import urllib
+import urllib.request as urllib
 from os import system
 
 def main():
 	try:
-		chat = urllib.request.urlopen('https://raw.githubusercontent.com/toth-boldizsar/python-chat/master/chat.py').read().decode('utf-8')
-		updater = urllib.requesr.urlopen('https://raw.githubusercontent.com/toth-boldizsar/python-chat/master/update.py').read().decode('utf-8')
-		version = urllib.request.urlopen('https://raw.githubusercontent.com/toth-boldizsar/python-chat/master/version.txt').read().decode('utf-8')
-	except urllib.request.URLError as e:
+		chat = urllib.urlopen('https://raw.githubusercontent.com/toth-boldizsar/python-chat/master/chat.py').read().decode('utf-8')
+		updater = urllib.urlopen('https://raw.githubusercontent.com/toth-boldizsar/python-chat/master/update.py').read().decode('utf-8')
+		version = urllib.urlopen('https://raw.githubusercontent.com/toth-boldizsar/python-chat/master/version.txt').read().decode('utf-8')
+	except urllib.URLError as e:
 		print('Connection failed')
 		exit()
 	oldversion = open('version.txt', 'r').read()
 
 	try:
 		system('mkdir versions')
-	except Exception:
-		pass
+	except Exception as e:
+		raise e
 	try:
 		system('mkdir versions/'+oldversion)
-	except Exception:
-		pass
+	except Exception as e:
+		raise e
 
 	system('mv chat.py versions/'+oldversion)
 	system('mv version.txt versions/'+oldversion)
