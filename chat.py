@@ -3,6 +3,10 @@ import socket
 import threading
 import argparse
 import random
+import os
+import sys
+import subprocess
+import urllib.request as urllib
 from time import sleep
 
 class colors:
@@ -11,10 +15,15 @@ class colors:
 	BLUE = '\033[34m'
 	CYAN = '\033[36m'
 	BOLD = '\033[1m'
+	ORANGE = '\033[33m'
+	YELLOW = '\033[33;1m'
 	ENDBOLD = '\033[22m'
 	ENDC = '\033[0m'
 
 def main():
+	os.system('cls' if os.name=='nt' else 'clear')
+
+	checkForUpdates()
 
 	parser = argparse.ArgumentParser(description='Simple python chat.')
 	option = parser.add_mutually_exclusive_group()
@@ -28,6 +37,50 @@ def main():
 	else:
 		server = Server(args.port)
 		server.start()
+
+def checkForUpdates():
+	print(colors.BLUE + "Checking for updates..." + colors.ENDC)
+	try:
+		newest = urllib.urlopen('https://raw.githubusercontent.com/toth-boldizsar/python-chat/master/version.txt')
+		connection = True
+	except urllib.URLError as e:
+		print(colors.RED + "No internet connection" + colors.ENDC)
+		connection = False
+	if connection:
+		newest = float(newest.read().decode('utf-8'))
+		current = float(open('version.txt', 'r').read())
+
+		if current == newest:
+			print(colors.GREEN + "Script is already up to date" + colors.ENDC)
+		elif current < newest:
+			print(colors.ORANGE + "There is an update available")
+			sleep(0.2)
+			print(colors.YELLOW + 'Current version: ' + str(current))
+			print('Newest version : ' + str(newest) + colors.ENDC)
+			sleep(0.2)
+			while True:
+				update = input(colors.GREEN + 'Do you want to update?' + colors.BOLD + ' [Y/n] ' + colors.ENDC)
+
+				if update == 'y' or update == 'Y' or update == 'n' or update == 'N' or update == '':
+					break
+				else:
+					print(colors.ORANGE + "Invalid option selected: '" +update+"'")
+
+			if update == 'y' or update == 'Y' or update == '':
+				Update()
+			else:
+				return
+
+		elif current > newest:
+			print(colors.RED + colors.BOLD + "You're a wizard!" + colors.ENDC)
+			sleep(0.2)
+			print(colors.YELLOW + 'Current version: ' + str(current))
+			print('Newest version : ' + str(newest) + colors.ENDC)
+			sleep(0.2)
+
+def Update():
+	subprocess.Popen(["python", "./update.py"])
+	sys.exit(0)
 
 class Server:
 
