@@ -114,7 +114,7 @@ class Server:
 			srv = input ("")
 
 			if srv == "/stop":
-				print("Stopping Server...")
+				print(colors.ORANGE + "Stopping Server..." + colors.ENDC)
 				for c in self.connections:
 					c.send("/exit".encode())
 				sThread = threading.Thread(target=self.terminate, name="Terminator")
