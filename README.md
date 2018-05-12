@@ -7,7 +7,6 @@ Simple python based chat server/client
 ```
 git clone https://github.com/toth-boldizsar/python-chat/
 cd python-chat
-chmod +x ./chat.py
 ```
 ### Examples
 #### To start a server on port 5555
