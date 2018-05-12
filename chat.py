@@ -206,7 +206,7 @@ class Client:
 					print(colors.ORANGE + "The server is running a diferent version (v" + data.split("=")[1] + ")" + colors.ENDC)
 					print(colors.BLUE + "Try running versions/" + data.split("=")[1] + "/chat.py" + colors.ENDC)
 
-				if data.split("=")[1] != open('version.txt', 'r').read()
+				if data.split("=")[1] != open('version.txt', 'r').read():
 					self.running = False
 					self.sock.send("/exit".encode())
 					self.sock.send("/exit".encode())
